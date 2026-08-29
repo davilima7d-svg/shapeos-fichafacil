@@ -1,0 +1,26 @@
+{
+  "summary": "Retested GIF bug fix in ExerciseGif.jsx (crossOrigin='anonymous' removed). CONFIRMED FIXED — real strengthlevel.com images now load on all exercise cards across Treino A/B/C. Fallback SVG is absent.",
+  "tested_scope": ["frontend"],
+  "passed": [
+    "Login as Aluno (Rafael) -> aluno-view rendered",
+    "day-seg (Treino A): all 5 cards (exercise-card-A-01..A-05) have <img> with src from static.strengthlevel.com and naturalWidth=1000 (real image loaded). exercise-gif-fallback ABSENT on every card.",
+    "day-ter (Treino B): all 5 cards (B-01..B-05) load real images (naturalWidth=1000, no fallback).",
+    "day-qua (Treino C): all 5 cards (C-01..C-05) load real images (naturalWidth=1000, no fallback).",
+    "Layout preserved: exercise number on left (01/02), title+meta in middle, ~112px square GIF on right with DEMO badge, toggle circle at far right."
+  ],
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "critical_code_review_comments": [],
+  "updated_files": [],
+  "test_report_links": [],
+  "success_rate": {"backend": "N/A (skipped)", "frontend": "100% — real GIFs load on 15/15 cards across A/B/C"},
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Bug fix verified. Auth is mocked. Rafael schedule seg=A ter=B qua=C qui=A sex=D sab=rest dom=rest. Images from static.strengthlevel.com/images/illustrations/*.jpg load successfully now that crossOrigin='anonymous' was removed. Grayscale filter is intentionally applied via CSS.",
+  "rca of the issue": "Root cause was crossOrigin='anonymous' on <img>, which forced CORS on image requests. strengthlevel.com does not return Access-Control-Allow-Origin, so browser blocked all requests -> onError -> fallback. Fix: removed crossOrigin (and referrerPolicy) so <img> loads via normal no-cors mode. Verified all 15 images load with naturalWidth=1000."
+}

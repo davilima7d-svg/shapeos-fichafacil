@@ -1,85 +1,84 @@
 // Mocked data for shapeOS - ficha fácil
-// B&W GIFs (grayscale filter applied in the UI) hosted publicly on fitnessprogramer.com
+// Weekly schedule per student · workout templates · exercises with reliable image sources
 
-export const workoutOfTheDay = {
-  code: "Treino A",
-  title: "Peito & Tríceps",
-  focus: "Força + Hipertrofia",
-  duration: "≈ 60 min",
-  exercises: [
-    {
-      id: "ex-01",
-      order: 1,
-      name: "Supino Reto com Barra",
-      muscle: "Peitoral",
-      equipment: "Barra Olímpica",
-      sets: 4,
-      reps: "8 - 10",
-      weight: "60 kg",
-      rest: "90s",
-      gif: "https://fitnessprogramer.com/wp-content/uploads/2021/02/Barbell-Bench-Press.gif",
-    },
-    {
-      id: "ex-02",
-      order: 2,
-      name: "Supino Inclinado com Halteres",
-      muscle: "Peitoral Superior",
-      equipment: "Halteres",
-      sets: 4,
-      reps: "10 - 12",
-      weight: "22 kg",
-      rest: "75s",
-      gif: "https://fitnessprogramer.com/wp-content/uploads/2021/02/Incline-Dumbbell-Press.gif",
-    },
-    {
-      id: "ex-03",
-      order: 3,
-      name: "Crucifixo na Máquina",
-      muscle: "Peitoral Interno",
-      equipment: "Máquina Peck-Deck",
-      sets: 3,
-      reps: "12 - 15",
-      weight: "45 kg",
-      rest: "60s",
-      gif: "https://fitnessprogramer.com/wp-content/uploads/2021/02/Machine-Fly.gif",
-    },
-    {
-      id: "ex-04",
-      order: 4,
-      name: "Tríceps Testa com Barra W",
-      muscle: "Tríceps",
-      equipment: "Barra W",
-      sets: 4,
-      reps: "10 - 12",
-      weight: "25 kg",
-      rest: "60s",
-      gif: "https://fitnessprogramer.com/wp-content/uploads/2021/02/Lying-Triceps-Extension.gif",
-    },
-    {
-      id: "ex-05",
-      order: 5,
-      name: "Tríceps na Polia com Corda",
-      muscle: "Tríceps",
-      equipment: "Polia Alta",
-      sets: 3,
-      reps: "12 - 15",
-      weight: "30 kg",
-      rest: "45s",
-      gif: "https://fitnessprogramer.com/wp-content/uploads/2021/02/Cable-Rope-Pushdown.gif",
-    },
-    {
-      id: "ex-06",
-      order: 6,
-      name: "Mergulho no Banco",
-      muscle: "Tríceps + Peitoral Inferior",
-      equipment: "Banco",
-      sets: 3,
-      reps: "AMRAP",
-      weight: "Peso Corporal",
-      rest: "45s",
-      gif: "https://fitnessprogramer.com/wp-content/uploads/2021/02/TRICEPS-DIPS.gif",
-    },
-  ],
+export const weekDays = [
+  { key: "seg", label: "Segunda", short: "Seg" },
+  { key: "ter", label: "Terça", short: "Ter" },
+  { key: "qua", label: "Quarta", short: "Qua" },
+  { key: "qui", label: "Quinta", short: "Qui" },
+  { key: "sex", label: "Sexta", short: "Sex" },
+  { key: "sab", label: "Sábado", short: "Sáb" },
+  { key: "dom", label: "Domingo", short: "Dom" },
+];
+
+// Map JS Date.getDay() (0=Sun..6=Sat) → schedule key
+export const jsDayToKey = ["dom", "seg", "ter", "qua", "qui", "sex", "sab"];
+
+export const workoutTemplates = [
+  { id: "A", code: "Treino A", title: "Peito & Ombros", accent: "#00D2D2" },
+  { id: "B", code: "Treino B", title: "Costas & Bíceps", accent: "#FF7043" },
+  { id: "C", code: "Treino C", title: "Pernas", accent: "#a78bfa" },
+  { id: "D", code: "Treino D", title: "Core & Full Body", accent: "#fbbf24" },
+  { id: "rest", code: "Descanso", title: "Recuperação", accent: "#52525b" },
+];
+
+// Reliable image source: strengthlevel.com static illustrations (verified 200 OK)
+const SL = (slug) =>
+  `https://static.strengthlevel.com/images/illustrations/${slug}-1000x1000.jpg`;
+
+export const workoutsById = {
+  A: {
+    code: "Treino A",
+    title: "Peito & Ombros",
+    focus: "Força + Hipertrofia",
+    duration: "≈ 60 min",
+    exercises: [
+      { id: "A-01", order: 1, name: "Supino Reto com Barra", muscle: "Peitoral", equipment: "Barra Olímpica", sets: 4, reps: "8 - 10", weight: "60 kg", rest: "90s", gif: SL("bench-press") },
+      { id: "A-02", order: 2, name: "Supino Inclinado com Halteres", muscle: "Peitoral Superior", equipment: "Halteres", sets: 4, reps: "10 - 12", weight: "22 kg", rest: "75s", gif: SL("incline-dumbbell-bench-press") },
+      { id: "A-03", order: 3, name: "Crucifixo com Halteres", muscle: "Peitoral", equipment: "Halteres", sets: 3, reps: "12", weight: "14 kg", rest: "60s", gif: SL("dumbbell-fly") },
+      { id: "A-04", order: 4, name: "Crucifixo na Máquina", muscle: "Peitoral Interno", equipment: "Peck-Deck", sets: 3, reps: "12 - 15", weight: "45 kg", rest: "60s", gif: SL("machine-chest-fly") },
+      { id: "A-05", order: 5, name: "Desenvolvimento com Halteres", muscle: "Ombros", equipment: "Halteres", sets: 4, reps: "10", weight: "18 kg", rest: "75s", gif: SL("dumbbell-shoulder-press") },
+    ],
+  },
+  B: {
+    code: "Treino B",
+    title: "Costas & Bíceps",
+    focus: "Volume + Espessura",
+    duration: "≈ 55 min",
+    exercises: [
+      { id: "B-01", order: 1, name: "Puxada Alta na Polia", muscle: "Latíssimo", equipment: "Polia Alta", sets: 4, reps: "10 - 12", weight: "55 kg", rest: "75s", gif: SL("lat-pulldown") },
+      { id: "B-02", order: 2, name: "Remada Curvada com Halteres", muscle: "Costas Média", equipment: "Halteres", sets: 4, reps: "10", weight: "24 kg", rest: "75s", gif: SL("dumbbell-row") },
+      { id: "B-03", order: 3, name: "Remada Sentada na Polia", muscle: "Costas", equipment: "Polia Baixa", sets: 3, reps: "12", weight: "50 kg", rest: "60s", gif: SL("seated-cable-row") },
+      { id: "B-04", order: 4, name: "Rosca Scott na Máquina", muscle: "Bíceps", equipment: "Banco Scott", sets: 3, reps: "12", weight: "20 kg", rest: "60s", gif: SL("preacher-curl") },
+      { id: "B-05", order: 5, name: "Rosca Martelo", muscle: "Braquial", equipment: "Halteres", sets: 3, reps: "12", weight: "14 kg", rest: "45s", gif: SL("hammer-curl") },
+    ],
+  },
+  C: {
+    code: "Treino C",
+    title: "Pernas",
+    focus: "Força & Hipertrofia",
+    duration: "≈ 70 min",
+    exercises: [
+      { id: "C-01", order: 1, name: "Agachamento Livre", muscle: "Quadríceps + Glúteo", equipment: "Barra Olímpica", sets: 4, reps: "6 - 8", weight: "90 kg", rest: "120s", gif: SL("squat") },
+      { id: "C-02", order: 2, name: "Levantamento Terra Romeno", muscle: "Posterior + Glúteo", equipment: "Barra Olímpica", sets: 4, reps: "8 - 10", weight: "80 kg", rest: "90s", gif: SL("romanian-deadlift") },
+      { id: "C-03", order: 3, name: "Cadeira Extensora", muscle: "Quadríceps", equipment: "Máquina", sets: 3, reps: "12 - 15", weight: "40 kg", rest: "60s", gif: SL("leg-extension") },
+      { id: "C-04", order: 4, name: "Mesa Flexora", muscle: "Posterior", equipment: "Máquina", sets: 3, reps: "12", weight: "35 kg", rest: "60s", gif: SL("lying-leg-curl") },
+      { id: "C-05", order: 5, name: "Agachamento Goblet", muscle: "Quadríceps", equipment: "Halter", sets: 3, reps: "15", weight: "22 kg", rest: "60s", gif: SL("goblet-squat") },
+    ],
+  },
+  D: {
+    code: "Treino D",
+    title: "Core & Full Body",
+    focus: "Estabilidade + Resistência",
+    duration: "≈ 45 min",
+    exercises: [
+      { id: "D-01", order: 1, name: "Levantamento Terra", muscle: "Posterior Total", equipment: "Barra Olímpica", sets: 4, reps: "5", weight: "100 kg", rest: "120s", gif: SL("deadlift") },
+      { id: "D-02", order: 2, name: "Prancha", muscle: "Core", equipment: "Peso Corporal", sets: 3, reps: "60s", weight: "PC", rest: "45s", gif: SL("plank") },
+      { id: "D-03", order: 3, name: "Elevação de Pernas na Barra", muscle: "Abdômen Inferior", equipment: "Barra Fixa", sets: 3, reps: "12", weight: "PC", rest: "60s", gif: SL("hanging-leg-raise") },
+      { id: "D-04", order: 4, name: "Abdominal na Polia", muscle: "Reto Abdominal", equipment: "Polia Alta", sets: 3, reps: "15", weight: "25 kg", rest: "45s", gif: SL("cable-crunch") },
+    ],
+  },
+  rest: null,
 };
 
 export const students = [
@@ -94,6 +93,7 @@ export const students = [
     streak: 14,
     initials: "RM",
     status: "ativo",
+    schedule: { seg: "A", ter: "B", qua: "C", qui: "A", sex: "D", sab: "rest", dom: "rest" },
   },
   {
     id: "std-02",
@@ -106,6 +106,7 @@ export const students = [
     streak: 8,
     initials: "BC",
     status: "ativo",
+    schedule: { seg: "C", ter: "D", qua: "rest", qui: "C", sex: "D", sab: "A", dom: "rest" },
   },
   {
     id: "std-03",
@@ -118,6 +119,7 @@ export const students = [
     streak: 3,
     initials: "LO",
     status: "pausado",
+    schedule: { seg: "A", ter: "rest", qua: "B", qui: "rest", sex: "C", sab: "rest", dom: "rest" },
   },
 ];
 

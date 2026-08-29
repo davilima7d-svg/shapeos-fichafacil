@@ -1,0 +1,32 @@
+{
+  "summary": "Frontend-only mock app tested for BUG FIX (exercise GIFs) + new FEATURES (Aluno week picker with rest day, Personal editable weekly schedule). All flows working. Exercise images from strengthlevel.com are CORS-blocked (crossOrigin='anonymous' set on <img>), which correctly triggers the branded SVG fallback (data-testid='exercise-gif-fallback') on every card — this is the intended fallback behavior per the review request. No cards render empty/broken.",
+  "tested_scope": ["frontend", "integration"],
+  "passed": [
+    "Login as Aluno -> aluno-view rendered",
+    "week-picker present with 7 chips: Seg=A, Ter=B, Qua=C, Qui=A, Sex=D, Sáb=Off, Dom=Off (matches Rafael's schedule)",
+    "Clicking day-seg shows 5 exercise-card-A-* cards; day-ter shows 5 exercise-card-B-* cards",
+    "Each exercise card shows the branded 'exercise-gif-fallback' (Dumbbell icon + name) — no broken/empty state",
+    "Sábado (rest): rest-day-card visible; exercise-list absent; finish-workout-button NOT rendered (correct)",
+    "Personal view: toggle-schedule-btn-std-01 expands schedule-std-01 grid of 7 days",
+    "schedule-day-std-01-qua opens schedule-popover-std-01-qua with 5 options (A/B/C/D/rest)",
+    "schedule-option-std-01-qua-B changes Wed cell to 'B', closes popover, and shows toast 'Quarta: Treino B'"
+  ],
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "ExerciseGif", "issues": ["All strengthlevel.com images are being blocked by CORS because <img> has crossOrigin='anonymous' + strengthlevel.com does not return Access-Control-Allow-Origin. Result: every card shows the SVG fallback instead of the real illustration. Per the review request this is acceptable, but if real images are desired, removing crossOrigin='anonymous' from ExerciseGif.jsx (line 48) would let the browser load them as normal no-cors image requests. Consider also removing referrerPolicy='no-referrer' if hotlink checks apply."]}
+    ]
+  },
+  "critical_code_review_comments": [
+    "ExerciseGif.jsx sets crossOrigin='anonymous' which forces CORS on <img> loads. Since strengthlevel.com does not send CORS headers, ALL images fail and fallback is shown 100% of the time. If the goal is to display actual GIFs, drop that attribute (images render without CORS by default)."
+  ],
+  "updated_files": [],
+  "test_report_links": [],
+  "success_rate": {"backend": "N/A (skipped)", "frontend": "100% (all features working; image fallback = expected per spec)"},
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Auth is fully mocked (any email/password). Rafael (std-01) default schedule: seg=A ter=B qua=C qui=A sex=D sab=rest dom=rest. Testing at Fri UTC: 'day-sex' had orange today-dot. Popover uses fixed overlay; use force=True on day/option clicks."
+}
