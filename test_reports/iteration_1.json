@@ -1,0 +1,22 @@
+{
+  "summary": "shapeOS 'ficha fácil' frontend-only mock app tested end-to-end. All critical flows work: login (both roles), Aluno workout view (exercises, progress bar, finish state), Personal dashboard (stats, students, clone action, search), and logout for both roles.",
+  "tested_scope": ["frontend", "integration"],
+  "passed": [
+    "Login view renders with logo, role tabs (Personal/Aluno), email/password inputs, orange 'Acessar Ficha' button and TLS 1.3 badge",
+    "Selecting Aluno tab + submit navigates to aluno-view showing 'Olá, Rafael' and 6 exercise cards",
+    "Toggling an exercise updates session-progress-bar width to 17% (1/6)",
+    "finish-workout-button switches to aqua 'Treino finalizado!' state",
+    "aluno-logout-button returns to login-view",
+    "Personal tab + submit navigates to personal-view with 3 stat cards and 3 student rows",
+    "clone-ficha-btn-std-01 click switches label to 'Duplicada' (aqua)",
+    "student-search-input 'Beatriz' filters list down to 1 row",
+    "personal-logout-button returns to login-view",
+    "Dark #1A1A1A background, aqua #00D2D2 and orange #FF7043 colors confirmed visually"
+  ],
+  "failed": [],
+  "action_items": [],
+  "success_rate": {"backend": "N/A (skipped per request)", "frontend": "100%"},
+  "retest_needed": false,
+  "full_testing_deferred": true,
+  "notes": "Backend testing intentionally skipped - app is 100% mocked frontend per review request. Auth is mocked (any credentials work)."
+}
