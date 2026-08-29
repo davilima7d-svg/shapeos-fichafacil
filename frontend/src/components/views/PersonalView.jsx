@@ -18,8 +18,10 @@ import {
   Calendar,
   ChevronDown,
   ChevronUp,
+  Dumbbell,
 } from "lucide-react";
 import Logo from "@/components/Logo";
+import WorkoutEditor from "@/components/WorkoutEditor";
 import {
   students as initialStudents,
   personalStats,
@@ -540,13 +542,14 @@ const EditFichaModal = ({ student, onCancel, onSave }) => {
   );
 };
 
-export const PersonalView = ({ onLogout }) => {
+export const PersonalView = ({ onLogout, workouts, onUpdateWorkout }) => {
   const [students, setStudents] = useState(initialStudents);
   const [query, setQuery] = useState("");
   const [clonedId, setClonedId] = useState(null);
   const [editing, setEditing] = useState(null);
   const [deleting, setDeleting] = useState(null);
   const [toast, setToast] = useState(null);
+  const [editingTemplate, setEditingTemplate] = useState(null);
 
   const filtered = students.filter((s) =>
     s.name.toLowerCase().includes(query.toLowerCase())
@@ -586,6 +589,12 @@ export const PersonalView = ({ onLogout }) => {
     const template = workoutTemplates.find((t) => t.id === workoutId);
     const day = weekDays.find((d) => d.key === dayKey);
     showToast(`${day.label}: ${template.code}`);
+  };
+
+  const handleSaveWorkout = (updated) => {
+    onUpdateWorkout(editingTemplate.id, updated);
+    setEditingTemplate(null);
+    showToast(`${editingTemplate.code} salvo com ${updated.exercises.length} exercícios`);
   };
 
   return (
@@ -677,6 +686,92 @@ export const PersonalView = ({ onLogout }) => {
           />
         </div>
 
+        {/* My Workouts (templates) */}
+        <div className="mb-10" data-testid="workout-templates-section">
+          <div className="flex items-center justify-between mb-4">
+            <h2
+              className="text-lg text-[#F5F5F5]"
+              style={{ fontFamily: "'Unbounded', sans-serif", fontWeight: 500 }}
+            >
+              Meus Treinos <span className="text-zinc-500">(edite os exercícios de cada ficha)</span>
+            </h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+            {workoutTemplates
+              .filter((t) => t.id !== "rest")
+              .map((t) => {
+                const w = workouts[t.id];
+                return (
+                  <button
+                    key={t.id}
+                    data-testid={`edit-template-${t.id}`}
+                    onClick={() => setEditingTemplate(t)}
+                    className="group text-left rounded-2xl p-5 transition-all duration-300 hover:-translate-y-0.5 relative overflow-hidden"
+                    style={{
+                      background:
+                        "linear-gradient(160deg, rgba(255,255,255,0.045), rgba(255,255,255,0.015))",
+                      border: "1px solid rgba(255,255,255,0.07)",
+                      boxShadow: "0 12px 30px rgba(0,0,0,0.25)",
+                    }}
+                  >
+                    <div
+                      className="absolute -top-8 -right-8 w-24 h-24 rounded-full opacity-30 blur-2xl"
+                      style={{ background: t.accent }}
+                    />
+                    <div className="relative">
+                      <div className="flex items-center justify-between">
+                        <span
+                          className="w-9 h-9 rounded-xl flex items-center justify-center"
+                          style={{
+                            background: `${t.accent}1a`,
+                            border: `1px solid ${t.accent}66`,
+                            color: t.accent,
+                            fontFamily: "'Unbounded', sans-serif",
+                            fontWeight: 700,
+                          }}
+                        >
+                          {t.id}
+                        </span>
+                        <Pencil className="w-3.5 h-3.5 text-zinc-500 group-hover:text-[#00D2D2] transition-colors" />
+                      </div>
+                      <h3
+                        className="mt-4 text-xl text-[#F5F5F5] leading-tight"
+                        style={{
+                          fontFamily: "'Unbounded', sans-serif",
+                          fontWeight: 600,
+                          letterSpacing: "-0.01em",
+                        }}
+                      >
+                        {w?.title || t.title}
+                      </h3>
+                      <div
+                        className="mt-1 text-xs text-zinc-500"
+                        style={{ fontFamily: "'Sora', sans-serif" }}
+                      >
+                        {t.code}
+                      </div>
+                      <div
+                        className="mt-4 flex items-center gap-3 text-xs text-zinc-400"
+                        style={{ fontFamily: "'Sora', sans-serif" }}
+                      >
+                        <span className="inline-flex items-center gap-1">
+                          <Dumbbell className="w-3 h-3 text-[#00D2D2]" />
+                          {w?.exercises?.length || 0} exercícios
+                        </span>
+                        {w?.duration && (
+                          <>
+                            <span className="w-1 h-1 rounded-full bg-zinc-700" />
+                            <span>{w.duration}</span>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  </button>
+                );
+              })}
+          </div>
+        </div>
+
         {/* Search + list header */}
         <div className="flex items-center justify-between mb-4">
           <h2
@@ -744,6 +839,14 @@ export const PersonalView = ({ onLogout }) => {
           student={deleting}
           onCancel={() => setDeleting(null)}
           onConfirm={handleConfirmDelete}
+        />
+      )}
+      {editingTemplate && (
+        <WorkoutEditor
+          template={editingTemplate}
+          workout={workouts[editingTemplate.id]}
+          onCancel={() => setEditingTemplate(null)}
+          onSave={handleSaveWorkout}
         />
       )}
 

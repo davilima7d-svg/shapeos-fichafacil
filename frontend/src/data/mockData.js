@@ -26,6 +26,35 @@ export const workoutTemplates = [
 const SL = (slug) =>
   `https://static.strengthlevel.com/images/illustrations/${slug}-1000x1000.jpg`;
 
+// Full exercise library available to the Personal for building fichas
+export const exerciseLibrary = [
+  // Peito
+  { id: "lib-01", name: "Supino Reto com Barra", muscle: "Peitoral", equipment: "Barra Olímpica", gif: SL("bench-press") },
+  { id: "lib-02", name: "Supino Inclinado com Halteres", muscle: "Peitoral Superior", equipment: "Halteres", gif: SL("incline-dumbbell-bench-press") },
+  { id: "lib-03", name: "Crucifixo com Halteres", muscle: "Peitoral", equipment: "Halteres", gif: SL("dumbbell-fly") },
+  { id: "lib-04", name: "Crucifixo na Máquina", muscle: "Peitoral Interno", equipment: "Peck-Deck", gif: SL("machine-chest-fly") },
+  // Ombros
+  { id: "lib-05", name: "Desenvolvimento com Halteres", muscle: "Ombros", equipment: "Halteres", gif: SL("dumbbell-shoulder-press") },
+  // Costas
+  { id: "lib-06", name: "Puxada Alta na Polia", muscle: "Latíssimo", equipment: "Polia Alta", gif: SL("lat-pulldown") },
+  { id: "lib-07", name: "Remada Curvada com Halteres", muscle: "Costas Média", equipment: "Halteres", gif: SL("dumbbell-row") },
+  { id: "lib-08", name: "Remada Sentada na Polia", muscle: "Costas", equipment: "Polia Baixa", gif: SL("seated-cable-row") },
+  { id: "lib-09", name: "Levantamento Terra", muscle: "Posterior Total", equipment: "Barra Olímpica", gif: SL("deadlift") },
+  // Bíceps
+  { id: "lib-10", name: "Rosca Scott na Máquina", muscle: "Bíceps", equipment: "Banco Scott", gif: SL("preacher-curl") },
+  { id: "lib-11", name: "Rosca Martelo", muscle: "Braquial", equipment: "Halteres", gif: SL("hammer-curl") },
+  // Pernas
+  { id: "lib-12", name: "Agachamento Livre", muscle: "Quadríceps + Glúteo", equipment: "Barra Olímpica", gif: SL("squat") },
+  { id: "lib-13", name: "Levantamento Terra Romeno", muscle: "Posterior + Glúteo", equipment: "Barra Olímpica", gif: SL("romanian-deadlift") },
+  { id: "lib-14", name: "Cadeira Extensora", muscle: "Quadríceps", equipment: "Máquina", gif: SL("leg-extension") },
+  { id: "lib-15", name: "Mesa Flexora", muscle: "Posterior", equipment: "Máquina", gif: SL("lying-leg-curl") },
+  { id: "lib-16", name: "Agachamento Goblet", muscle: "Quadríceps", equipment: "Halter", gif: SL("goblet-squat") },
+  // Core
+  { id: "lib-17", name: "Prancha Isométrica", muscle: "Core", equipment: "Peso Corporal", gif: SL("plank") },
+  { id: "lib-18", name: "Elevação de Pernas na Barra", muscle: "Abdômen Inferior", equipment: "Barra Fixa", gif: SL("hanging-leg-raise") },
+  { id: "lib-19", name: "Abdominal na Polia", muscle: "Reto Abdominal", equipment: "Polia Alta", gif: SL("cable-crunch") },
+];
+
 export const workoutsById = {
   A: {
     code: "Treino A",

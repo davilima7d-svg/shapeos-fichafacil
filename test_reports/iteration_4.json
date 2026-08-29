@@ -1,0 +1,22 @@
+{
+  "summary": "Tested new Personal WorkoutEditor feature end-to-end via Playwright. All 29 assertions passed: 4 template cards render (A/B/C/D) in workout-templates-section with correct titles and exercise counts; editor opens for Treino A with editable title/focus/duration and 5 rows (A-01..A-05); field edits (sets/reps/weight/rest) work; reorder (move-down + move-up) works; remove exercise reduces list to 4; library picker opens, search 'agacha' filters, clicking library-item-lib-12 (Agachamento Livre) adds exercise (list back to 5) and closes picker; save closes editor and shows toast 'Treino A salvo com 5 exercícios'; after logout + login as Aluno, day-seg reflects edited Treino A (5 exercises, Agachamento Livre present, old A-05 Desenvolvimento com Halteres removed, edited sets/weight/rest visible on card 01) — proving state lifted to App.js propagates correctly across views. GIFs (strengthlevel.com) load without errors.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "WorkoutEditor: sets input strips non-digits via replace(/[^0-9]/g,'') — that's fine but reps/rest/weight accept free-form strings; OK for mock but if backed by a real API, validate ranges.",
+    "AlunoView still imports workoutTemplates and students from mockData for schedule/week rendering; workouts are lifted but students and template accents remain module-level. Fine for MVP.",
+    "Library picker disables items already in the ficha via existingNames match by name — case-sensitive exact match; not a bug for the current dataset but brittle if names ever get pluralized/edited."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A (skipped)", "frontend": "100% (29/29)"},
+  "seed_data_creation": "none",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Auth is mocked — any credentials pass. Personal role via role-tab-personal. Workouts state lifted to App.js so edits by Personal persist across logout/login within the same session. Rafael's schedule seg=A ter=B qua=C qui=A sex=D sab/dom=rest. All Editor test-ids exist: workout-editor, editor-title-input, editor-focus-input, editor-duration-input, editor-row-{id}, sets-{id}, reps-{id}, weight-{id}, rest-{id}, move-up-{id}, move-down-{id}, remove-exercise-{id}, add-exercise-button, library-picker, library-search-input, library-item-{libId}, editor-save-button, editor-cancel-button, personal-toast."
+}

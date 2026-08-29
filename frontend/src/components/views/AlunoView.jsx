@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 import Logo from "@/components/Logo";
 import ExerciseGif from "@/components/ExerciseGif";
-import { weekDays, jsDayToKey, workoutsById, workoutTemplates, students } from "@/data/mockData";
+import { weekDays, jsDayToKey, workoutTemplates, students } from "@/data/mockData";
 
 const StatChip = ({ icon: Icon, label, value, accent }) => (
   <div
@@ -185,7 +185,7 @@ const RestDayCard = () => (
   </div>
 );
 
-export const AlunoView = ({ onLogout }) => {
+export const AlunoView = ({ onLogout, workouts }) => {
   const student = students[0]; // Rafael Martins (mock aluno logado)
   const todayKey = jsDayToKey[new Date().getDay()];
 
@@ -194,7 +194,7 @@ export const AlunoView = ({ onLogout }) => {
   const [finished, setFinished] = useState(false);
 
   const workoutId = student.schedule[selectedDay];
-  const workout = workoutId ? workoutsById[workoutId] : null;
+  const workout = workoutId ? workouts[workoutId] : null;
   const isRest = workoutId === "rest" || !workout;
 
   const doneSet = completed[workoutId] || new Set();
