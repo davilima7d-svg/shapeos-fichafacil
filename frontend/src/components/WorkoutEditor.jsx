@@ -5,12 +5,13 @@ import {
   Search,
   Trash2,
   Save,
-  GripVertical,
   Dumbbell,
   ChevronUp,
   ChevronDown,
+  Sparkles,
 } from "lucide-react";
 import ExerciseGif from "@/components/ExerciseGif";
+import CreateExerciseModal from "@/components/CreateExerciseModal";
 import { exerciseLibrary } from "@/data/mockData";
 
 /**
@@ -18,7 +19,7 @@ import { exerciseLibrary } from "@/data/mockData";
  * The Personal can rename it, change focus/duration, edit each exercise's
  * sets/reps/weight/rest, reorder, remove, and add from the library.
  */
-export const WorkoutEditor = ({ template, workout, onCancel, onSave }) => {
+export const WorkoutEditor = ({ template, workout, onCancel, onSave, customExercises = [], onAddCustomExercise }) => {
   const [title, setTitle] = useState(workout?.title || "");
   const [focus, setFocus] = useState(workout?.focus || "");
   const [duration, setDuration] = useState(workout?.duration || "≈ 60 min");
@@ -271,6 +272,8 @@ export const WorkoutEditor = ({ template, workout, onCancel, onSave }) => {
           existingNames={exercises.map((e) => e.name)}
           onCancel={() => setLibraryOpen(false)}
           onPick={addFromLibrary}
+          customExercises={customExercises}
+          onAddCustomExercise={onAddCustomExercise}
         />
       )}
     </div>
@@ -408,15 +411,29 @@ const MetricInput = ({ label, value, onChange, accent, testId }) => (
 );
 
 /* Library picker */
-const LibraryPicker = ({ existingNames, onCancel, onPick }) => {
+const LibraryPicker = ({ existingNames, onCancel, onPick, customExercises = [], onAddCustomExercise }) => {
   const [query, setQuery] = useState("");
+  const [createOpen, setCreateOpen] = useState(false);
+
+  const allExercises = useMemo(
+    () => [...customExercises, ...exerciseLibrary],
+    [customExercises]
+  );
+
   const filtered = useMemo(
     () =>
-      exerciseLibrary.filter((e) =>
+      allExercises.filter((e) =>
         `${e.name} ${e.muscle} ${e.equipment}`.toLowerCase().includes(query.toLowerCase())
       ),
-    [query]
+    [allExercises, query]
   );
+
+  const handleCreated = (exercise) => {
+    onAddCustomExercise?.(exercise);
+    setCreateOpen(false);
+    // Auto-add to workout right after creation
+    onPick(exercise);
+  };
 
   return (
     <div
@@ -449,7 +466,7 @@ const LibraryPicker = ({ existingNames, onCancel, onPick }) => {
                 Biblioteca de Exercícios
               </h3>
               <p className="text-xs text-zinc-500 mt-0.5" style={{ fontFamily: "'Sora', sans-serif" }}>
-                Toque em um exercício para adicionar à ficha
+                Toque em um exercício para adicionar à ficha · {allExercises.length} disponíveis
               </p>
             </div>
             <button
@@ -461,20 +478,35 @@ const LibraryPicker = ({ existingNames, onCancel, onPick }) => {
               <X className="w-4 h-4" />
             </button>
           </div>
-          <div className="relative">
-            <Search className="w-3.5 h-3.5 text-zinc-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
-            <input
-              data-testid="library-search-input"
-              placeholder="Buscar por nome ou grupo muscular..."
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              className="w-full pl-9 pr-4 py-2.5 rounded-xl text-sm text-[#F5F5F5] placeholder:text-zinc-600 outline-none focus:border-[#00D2D2]/60 focus:ring-2 focus:ring-[#00D2D2]/20"
+          <div className="flex items-center gap-2">
+            <div className="relative flex-1">
+              <Search className="w-3.5 h-3.5 text-zinc-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
+              <input
+                data-testid="library-search-input"
+                placeholder="Buscar por nome ou grupo muscular..."
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                className="w-full pl-9 pr-4 py-2.5 rounded-xl text-sm text-[#F5F5F5] placeholder:text-zinc-600 outline-none focus:border-[#00D2D2]/60 focus:ring-2 focus:ring-[#00D2D2]/20"
+                style={{
+                  background: "rgba(255,255,255,0.03)",
+                  border: "1px solid rgba(255,255,255,0.08)",
+                  fontFamily: "'Sora', sans-serif",
+                }}
+              />
+            </div>
+            <button
+              data-testid="library-create-button"
+              onClick={() => setCreateOpen(true)}
+              className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all hover:scale-[1.02] flex-shrink-0"
               style={{
-                background: "rgba(255,255,255,0.03)",
-                border: "1px solid rgba(255,255,255,0.08)",
+                background: "#FF7043",
+                color: "#1A1A1A",
+                boxShadow: "0 6px 18px rgba(255,112,67,0.3), inset 0 -2px 0 rgba(0,0,0,0.15)",
                 fontFamily: "'Sora', sans-serif",
               }}
-            />
+            >
+              <Sparkles className="w-3.5 h-3.5" /> Novo exercício
+            </button>
           </div>
         </div>
 
@@ -489,12 +521,25 @@ const LibraryPicker = ({ existingNames, onCancel, onPick }) => {
                   data-testid={`library-item-${item.id}`}
                   onClick={() => !alreadyAdded && onPick(item)}
                   disabled={alreadyAdded}
-                  className="group flex items-center gap-3 p-3 rounded-2xl text-left transition-all disabled:opacity-40 hover:-translate-y-0.5"
+                  className="group flex items-center gap-3 p-3 rounded-2xl text-left transition-all disabled:opacity-40 hover:-translate-y-0.5 relative"
                   style={{
                     background: "rgba(255,255,255,0.03)",
-                    border: "1px solid rgba(255,255,255,0.07)",
+                    border: `1px solid ${item.custom ? "rgba(255,112,67,0.35)" : "rgba(255,255,255,0.07)"}`,
                   }}
                 >
+                  {item.custom && (
+                    <span
+                      className="absolute top-2 right-2 text-[9px] uppercase tracking-widest px-1.5 py-0.5 rounded"
+                      style={{
+                        background: "rgba(255,112,67,0.15)",
+                        color: "#FF7043",
+                        border: "1px solid rgba(255,112,67,0.4)",
+                        fontFamily: "'Sora', sans-serif",
+                      }}
+                    >
+                      Custom
+                    </span>
+                  )}
                   <ExerciseGif src={item.gif} alt={item.name} size={64} />
                   <div className="flex-1 min-w-0">
                     <div
@@ -535,12 +580,19 @@ const LibraryPicker = ({ existingNames, onCancel, onPick }) => {
                   fontFamily: "'Sora', sans-serif",
                 }}
               >
-                Nenhum exercício encontrado para &quot;{query}&quot;.
+                Nenhum exercício encontrado para &quot;{query}&quot;. Toque em &quot;Novo exercício&quot; para criar um.
               </div>
             )}
           </div>
         </div>
       </div>
+
+      {createOpen && (
+        <CreateExerciseModal
+          onCancel={() => setCreateOpen(false)}
+          onCreate={handleCreated}
+        />
+      )}
     </div>
   );
 };

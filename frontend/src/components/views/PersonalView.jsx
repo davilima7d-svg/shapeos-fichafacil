@@ -19,11 +19,11 @@ import {
   ChevronDown,
   ChevronUp,
   Dumbbell,
+  UserPlus,
 } from "lucide-react";
 import Logo from "@/components/Logo";
 import WorkoutEditor from "@/components/WorkoutEditor";
 import {
-  students as initialStudents,
   personalStats,
   weekDays,
   workoutTemplates,
@@ -542,8 +542,163 @@ const EditFichaModal = ({ student, onCancel, onSave }) => {
   );
 };
 
-export const PersonalView = ({ onLogout, workouts, onUpdateWorkout }) => {
-  const [students, setStudents] = useState(initialStudents);
+const PLANS = ["Hipertrofia", "Emagrecimento", "Força Máxima", "Resistência"];
+
+const fieldStyle = { background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" };
+const fieldClass =
+  "mt-2 w-full px-4 py-3 rounded-xl text-[#F5F5F5] placeholder:text-zinc-600 outline-none focus:border-[#00D2D2]/60 focus:ring-2 focus:ring-[#00D2D2]/20";
+
+const NewStudentModal = ({ onCancel, onSave }) => {
+  const [name, setName] = useState("");
+  const [age, setAge] = useState("");
+  const [plan, setPlan] = useState(PLANS[0]);
+  const [error, setError] = useState("");
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const trimmed = name.trim();
+    if (trimmed.length < 3) return setError("Informe o nome completo do aluno.");
+    const ageNum = Number(age);
+    if (!ageNum || ageNum < 10 || ageNum > 100) return setError("Informe uma idade válida (10 a 100).");
+    onSave({ name: trimmed, age: ageNum, plan });
+  };
+
+  return (
+    <ModalShell onClose={onCancel} testId="new-student-modal">
+      <button
+        onClick={onCancel}
+        className="absolute top-4 right-4 text-zinc-500 hover:text-[#F5F5F5] transition-colors"
+        aria-label="Fechar"
+        data-testid="new-student-close-button"
+      >
+        <X className="w-4 h-4" />
+      </button>
+      <div className="flex items-center gap-3 mb-5">
+        <div
+          className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
+          style={{ background: "rgba(255,112,67,0.12)", border: "1px solid rgba(255,112,67,0.35)" }}
+        >
+          <UserPlus className="w-4 h-4 text-[#FF7043]" />
+        </div>
+        <div>
+          <h2
+            className="text-xl text-[#F5F5F5] leading-tight"
+            style={{ fontFamily: "'Unbounded', sans-serif", fontWeight: 600, letterSpacing: "-0.01em" }}
+          >
+            Novo aluno
+          </h2>
+          <p className="text-xs text-zinc-500 mt-0.5" style={{ fontFamily: "'Sora', sans-serif" }}>
+            Cadastre e monte o cronograma em seguida
+          </p>
+        </div>
+      </div>
+
+      <form onSubmit={handleSubmit} className="space-y-4" style={{ fontFamily: "'Sora', sans-serif" }}>
+        <div>
+          <label className="text-xs text-zinc-500 uppercase tracking-widest">Nome completo</label>
+          <input
+            data-testid="new-student-name-input"
+            type="text"
+            autoFocus
+            placeholder="Ex.: Ana Souza"
+            value={name}
+            onChange={(e) => { setName(e.target.value); setError(""); }}
+            className={fieldClass}
+            style={fieldStyle}
+          />
+        </div>
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label className="text-xs text-zinc-500 uppercase tracking-widest">Idade</label>
+            <input
+              data-testid="new-student-age-input"
+              type="number"
+              min="10"
+              max="100"
+              placeholder="25"
+              value={age}
+              onChange={(e) => { setAge(e.target.value); setError(""); }}
+              className={fieldClass}
+              style={fieldStyle}
+            />
+          </div>
+          <div>
+            <label className="text-xs text-zinc-500 uppercase tracking-widest">Objetivo</label>
+            <select
+              data-testid="new-student-plan-select"
+              value={plan}
+              onChange={(e) => setPlan(e.target.value)}
+              className={fieldClass}
+              style={fieldStyle}
+            >
+              {PLANS.map((p) => (
+                <option key={p} value={p} style={{ background: "#1a1a1a" }}>{p}</option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        {error && (
+          <p data-testid="new-student-error" className="text-xs text-[#ff8a8a] flex items-center gap-1.5">
+            <AlertTriangle className="w-3.5 h-3.5" /> {error}
+          </p>
+        )}
+
+        <div className="flex gap-3 pt-3">
+          <button
+            type="button"
+            data-testid="new-student-cancel-button"
+            onClick={onCancel}
+            className="flex-1 py-3 rounded-xl text-sm text-[#F5F5F5] transition-all hover:bg-white/5"
+            style={fieldStyle}
+          >
+            Cancelar
+          </button>
+          <button
+            type="submit"
+            data-testid="new-student-save-button"
+            className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-semibold text-[#1A1A1A] transition-all hover:scale-[1.01]"
+            style={{
+              background: "#FF7043",
+              boxShadow: "0 10px 24px rgba(255,112,67,0.35), inset 0 -3px 0 rgba(0,0,0,0.12)",
+            }}
+          >
+            <UserPlus className="w-4 h-4" /> Cadastrar aluno
+          </button>
+        </div>
+      </form>
+    </ModalShell>
+  );
+};
+
+const buildStudent = ({ name, age, plan }) => {
+  const parts = name.split(/\s+/);
+  const initials = (parts[0][0] + (parts[1]?.[0] || parts[0][1] || "")).toUpperCase();
+  return {
+    id: `std-${Date.now()}`,
+    name,
+    age,
+    plan,
+    currentWorkout: "Treino A",
+    lastSeen: "Cadastrado agora",
+    progress: 0,
+    streak: 0,
+    initials,
+    status: "ativo",
+    schedule: { seg: "A", ter: "rest", qua: "B", qui: "rest", sex: "C", sab: "rest", dom: "rest" },
+  };
+};
+
+export const PersonalView = ({
+  onLogout,
+  workouts,
+  onUpdateWorkout,
+  customExercises = [],
+  onAddCustomExercise,
+  students,
+  setStudents,
+}) => {
+  const [creating, setCreating] = useState(false);
   const [query, setQuery] = useState("");
   const [clonedId, setClonedId] = useState(null);
   const [editing, setEditing] = useState(null);
@@ -589,6 +744,14 @@ export const PersonalView = ({ onLogout, workouts, onUpdateWorkout }) => {
     const template = workoutTemplates.find((t) => t.id === workoutId);
     const day = weekDays.find((d) => d.key === dayKey);
     showToast(`${day.label}: ${template.code}`);
+  };
+
+  const handleCreateStudent = (data) => {
+    const student = buildStudent(data);
+    setStudents((prev) => [student, ...prev]);
+    setCreating(false);
+    setQuery("");
+    showToast(`${student.name} cadastrado(a) com sucesso`);
   };
 
   const handleSaveWorkout = (updated) => {
@@ -647,6 +810,7 @@ export const PersonalView = ({ onLogout, workouts, onUpdateWorkout }) => {
 
           <button
             data-testid="new-student-button"
+            onClick={() => setCreating(true)}
             className="flex items-center gap-2 px-5 py-3 rounded-2xl font-semibold transition-all hover:scale-[1.02] self-start md:self-auto"
             style={{
               background: "#FF7043",
@@ -827,6 +991,9 @@ export const PersonalView = ({ onLogout, workouts, onUpdateWorkout }) => {
       </div>
 
       {/* Modals */}
+      {creating && (
+        <NewStudentModal onCancel={() => setCreating(false)} onSave={handleCreateStudent} />
+      )}
       {editing && (
         <EditFichaModal
           student={editing}
@@ -847,6 +1014,11 @@ export const PersonalView = ({ onLogout, workouts, onUpdateWorkout }) => {
           workout={workouts[editingTemplate.id]}
           onCancel={() => setEditingTemplate(null)}
           onSave={handleSaveWorkout}
+          customExercises={customExercises}
+          onAddCustomExercise={(ex) => {
+            onAddCustomExercise(ex);
+            showToast(`Exercício "${ex.name}" adicionado à biblioteca`);
+          }}
         />
       )}
 

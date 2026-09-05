@@ -1,0 +1,26 @@
+{
+  "summary": "Frontend-only test of the new 'Novo exercício' (CreateExerciseModal) flow inside the WorkoutEditor > LibraryPicker. All 8 scenarios from the review request passed. Auth is mocked; used Personal role. Library shows 19 default exercises; opening the picker reveals the orange 'library-create-button' beside the search bar. The create modal opens (z-70) above the picker (z-60) above the editor (z-50). 'create-save-button' correctly disabled while any required field (name/muscle/equipment/previewSrc) is empty. URL tab is active by default with 'create-url-input' present. Switching to 'source-tab-upload' shows 'create-dropzone' and hidden 'create-file-input'. Cancel closes the modal without adding (library remains at 19). Full happy path: filling name='Supino Máquina Convergente', muscle='Peitoral', equipment='Máquina Hammer', URL=strengthlevel bench-press image enabled the save button; clicking it closed the modal AND the picker, showed toast 'Exercício \"Supino Máquina Convergente\" adicionado à biblioteca', and the WorkoutEditor header updated from Exercícios (5) to Exercícios (6) — confirming auto-add to the ficha in edition. Reopening the library shows '20 disponíveis' (19 default + 1 custom); searching 'Convergente' filters to exactly 1 result with orange 'CUSTOM' badge and 'JÁ NA FICHA' state (already added). No console errors, no page errors.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Minor: CreateExerciseModal does not sanitize/validate the pasted URL (no URL format check). A malformed URL will still enable the save button as long as the string is non-empty; broken images will simply fail to render via ExerciseGif. Consider adding a basic URL validation (URL constructor or regex) and showing a subtle warning near create-url-input.",
+    "Minor: File size limit (8 MB) message is Portuguese-only — fine for this app, but note that data-URLs of that size will bloat React state and can cause perceptible lag when many customs exist. Consider recommending compression or a smaller cap (~2 MB) for GIFs.",
+    "Minor: customExercises state is kept only in App.js (in-memory). Note in the ticket says it 'persiste entre logout/login dentro da sessão' — confirmed. If persistence across reload is desired later, wire to localStorage.",
+    "Minor: The auto-add-to-workout behavior after creation is intentional per the ticket, but it double-couples 'create' with 'add'. If a Personal only wants to add to library without adding to the current workout, there is no path. Consider a checkbox 'Adicionar ao treino em edição' (default true).",
+    "Minor: In LibraryPicker, when the created custom is filtered, it shows both the orange 'Custom' badge AND 'já na ficha' state — visually crowded on the small card. Cosmetic only."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "n/a", "frontend": "100%"},
+  "test_credentials": "Auth mocked — any email/password on Personal tab works",
+  "seed_data_creation": "None (in-app custom exercise created during test only lives in session state)",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "CreateExerciseModal + LibraryPicker integration validated end-to-end via URL flow. Upload flow tested at UI level (tab switch, dropzone + hidden file input present) but file selection via set_input_files was not exercised — you can simulate a small GIF buffer if a deeper file test is requested. Auth is mocked, credentials free-form. Editor headline text updates from N to N+1 exercises after create, confirming the auto-add behavior. Custom exercises persist for the browser session only.",
+  "rca of the issue": "No issue reproduced — feature works as specified."
+}
