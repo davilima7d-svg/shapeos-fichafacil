@@ -1,0 +1,33 @@
+node_modules/
+.next/
+.expo/
+dist/
+out/
+*.tsbuildinfo
+.env
+.env.local
+.env*.local
+.DS_Store
+supabase/.temp/
+supabase/.branches/
+Temp/
+.vercel/
+ios/
+android/
+web-build/
+*.log
+.turbo/
+
+.vercel
+.env*
+
+# Playwright
+test-results/
+playwright-report/
+
+# PWA (gerado no build)
+apps/web/public/sw.js
+apps/web/public/swe-worker*.js
+
+# E2E runtime accounts
+e2e/.e2e-accounts.json
